@@ -6,19 +6,24 @@
     margin-right: auto;
     width: 1000px;
     height: 1000px;
-}
+    border: solid black 1px;
 
-.screen{
-    position: absolute;
-    z-index: 1;
-    opacity: 1;
+    background-image: url("../images/pc.png");
+    background-repeat: no-repeat;
+    background-position: right top;
+    background-size: 100% 100%;
 }
 canvas{
-    left: 210px;
+    left: 180px;
     position: absolute;
-    top: 132px;
+    top: 95px;
     z-index: 2;
-    border: solid black 1px;
-    width:600px;
-    height: 410px;
+    border: solid lightgreen 1px;
+    width:660px;
+    height: 455px;
+}
+
+.frankComputer{
+    position: relative;
+    width: 100%;
 }
