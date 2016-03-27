@@ -1,0 +1,33 @@
+
+.container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 950px;
+    height: 900px;
+    border: solid black 1px;
+    background-image: url("img/pc.png");
+    background-repeat: no-repeat;
+    background-position: right top;
+    background-size: 100% 100%;
+}
+
+#score {
+    position: absolute;
+    top: 150px;
+    left: 280px;
+    right: auto;
+    color: lightgreen;
+}
+
+canvas {
+    left: 180px;
+    position: absolute;
+    top: 95px;
+    z-index: 2;
+    border: solid lightgreen 1px;
+    width: 590px;
+    height: 400px;
+}
