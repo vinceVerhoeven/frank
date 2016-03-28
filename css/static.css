@@ -7,7 +7,7 @@
     width: 1000px;
     height: 1000px;
     border: solid black 1px;
-
+    top: 100px;
     background-image: url("../images/pc.png");
     background-repeat: no-repeat;
     background-position: right top;

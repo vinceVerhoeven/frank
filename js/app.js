@@ -8,62 +8,72 @@ function ModelFrank(parent) {
     // computer regeert anders gebasseerd op aantal punten
     this.dialog = {
         1: {
-            normal: {frankSay: "this dialog 1", points: 0,
+            normal: {frankSay: "Hello, It’s good to have you finally here!", points: 0,
                 userinput: {
-                    normal: {userSay: "1. normal answer", points: 2, button: 49},
-                    shy: {userSay: "2. shy answer", points: 3, button: 50},
-                    mean: {userSay: "3. mean answer", points: 1, button: 51}
+                    normal: {userSay: "1. Yep", points: 2, button: 49},
+                    shy: {userSay: "2. Wait, who are you?", points: 3, button: 50},
+                    mean: {userSay: "3. stay silent.", points: 1, button: 51}
+                },
+                answer: {
+                    normal: {frankSay: "1. Is that all you answer? I shall reintroduce myself"},
+                    shy: {frankSay: "2. Who am I? haha"},
+                    mean: {frankSay: "3. not a talker I see"}
                 }
             }
         },
         2: {
-            normal: {frankSay: "do you want to play a game?", points: 0,
+            normal: {frankSay: "I am frank the old computer. Can you not see that?", points: 0,
                 userinput: {
-                    normal: {userSay: "1. normal answer", points: 2, button: 49},
-                    mean: {userSay: "3. mean answer", points: 1, button: 51},
-                    shy: {userSay: "2. shy answer", points: 3, button: 50}
+                    normal: {userSay: "1. No I don’t", points: 2, button: 49},
+                    mean: {userSay: "3. Yes, you look like shit.", points: 1, button: 51},
+                    shy: {userSay: "2. stay silent.", points: 3, button: 50}
                 }
             }
         },
         3: {
-            normal: {frankSay: "this dialog 3", points: 0,
+            normal: {frankSay: "Anyway, I have been waiting for you for a long time", points: 0,
                 userinput: {
-                    normal: {userSay: "1. normal answer", points: 2, button: 49},
-                    mean: {userSay: "3. mean answer", points: 1, button: 51},
-                    shy: {userSay: "2. shy answer", points: 3, button: 50}
+                    normal: {userSay: "1. Why?", points: 2, button: 49},
+                    mean: {userSay: "3. Yes so am I !", points: 1, button: 51},
+                    shy: {userSay: "2. You are freaking me out", points: 3, button: 50}
                 }
             }
         },
         4: {
-            normal: {frankSay: "this dialog 4", points: 0,
+            normal: {frankSay: "do you want to play a game?", points: 0,
                 userinput: {
-                    normal: {userSay: "1. normal answer", points: 2, button: 49},
-                    mean: {userSay: "3. mean answer", points: 1, button: 51},
-                    shy: {userSay: "2. shy answer", points: 3, button: 50}
+                    normal: {userSay: "1. No I have work to do", points: 2, button: 49},
+                    mean: {userSay: "3. log out", points: 1, button: 51},
+                    shy: {userSay: "2. shut the computer off", points: 3, button: 50}
                 }
             }
         },
         5: {
-            normal: {frankSay: "do you want to play a game?", points: 0,
+            normal: {frankSay: "I want you to play a game with me", points: 0,
                 userinput: {
-                    normal: {userSay: "1. normal answer", points: 2, button: 49},
-                    mean: {userSay: "3. mean answer", points: 1, button: 51},
-                    shy: {userSay: "2. shy answer", points: 3, button: 50}
+                    normal: {userSay: "1. okay", points: 2, button: 49},
+                    mean: {userSay: "3. okay", points: 1, button: 51},
+                    shy: {userSay: "2. okay", points: 3, button: 50}
+                }
+            }
+        },
+        6: {
+            normal: {frankSay: "you cannot leave me", points: 0,
+                userinput: {
+                    normal: {userSay: "1. ", points: 2, button: 49},
+                    mean: {userSay: "3. ", points: 1, button: 51},
+                    shy: {userSay: "2. ", points: 3, button: 50}
                 }
             }
         }
-
     };
     this.answers = ['normal', 'shy', 'mean'];
-
     this.frankText = "";
     this.userText = "";
     this.dialogNumber = 0;
-
     this.showLastAnswer = false;
     this.displayText = false;
     this.displayUserText = false;
-
     this.soundStartup = new Audio();
     this.soundStartup.src = 'sounds/startup.wav';
     this.soundStartup.volume = 0.2;
@@ -75,12 +85,18 @@ ModelFrank.prototype = {
     inputIcon: function () {
         this.displayText(100, 100, "check");
     },
-    dialogConverter: function () {
-        this.dialogNumber += 1;
-        return  this.dialog[this.dialogNumber]['normal']['frankSay'];
-    },
     clearScreen: function () {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    checkDisplayAnswerOnly: function () {
+        if (this.dialog[this.dialogNumber]['normal']['answer'] && this.parent.modelPlayer.lastemotion) {
+            var emotion = this.parent.modelPlayer.lastemotion;
+            this.frankSplitText = this.dialog[this.dialogNumber]['answer'][emotion]['frankSay'];
+            return true;
+        } else {
+            this.frankSplitText = this.dialog[this.dialogNumber]['normal']['frankSay'];
+            return false;
+        }
     },
     talk: function () {
         if (!this.talking) {
@@ -89,9 +105,8 @@ ModelFrank.prototype = {
             this.clearScreen();
             this.userText = "";
             this.frankText = "";
-            console.info('frank talking');
-            var text = this.dialogConverter();
-            var splitstr = text.split('');
+            console.info(this.frankSplitText);
+            var splitstr = this.frankSplitText.split('');
             var i = 0;
             var pause = 200;
             var self = this;
@@ -101,7 +116,7 @@ ModelFrank.prototype = {
                 if (currentTime + pause < new Date().getTime()) {
                     if (i < splitstr.length) {
                         currentTime = new Date().getTime();
-                        pause = self.randomNumber(20, 200);
+                        pause = self.randomNumber(20, 40);
                         self.frankText += splitstr[i];
                     }
                     i++;
@@ -113,7 +128,7 @@ ModelFrank.prototype = {
                         clearTimeout(inter);
                     }
                 }
-            }, 200);
+            }, 100);
         }
     },
     displayLastAnswer: function () {
@@ -122,8 +137,13 @@ ModelFrank.prototype = {
             this.clearScreen();
             this.showLastAnswer = true;
             setTimeout(function () {
-                self.talk();
+                self.dialogNumber += 1; // add one to dialog number
                 self.showLastAnswer = false;
+                if (self.checkDisplayAnswerOnly()) {
+
+                } else {
+                    self.talk();
+                }
             }, 1000);
         }
     },
@@ -132,7 +152,6 @@ ModelFrank.prototype = {
             this.ctx.font = "12px Arial";
             this.ctx.fillStyle = 'lightgreen';
             this.ctx.fillText(this.frankText, 10, 30);
-
             if (this.displayUserText) {
                 var textPosition = 40;
                 for (var i = 0; i < 3; i++) {
@@ -176,7 +195,7 @@ function ModelPlayer(parent) {
 }
 ModelPlayer.prototype = {
     keyboard: function () {
-        // alles wat te maken heeft met de keyboard komt hier
+// alles wat te maken heeft met de keyboard komt hier
         var self = this;
         this.keyState = {};
         window.addEventListener('keydown', function (e) {
@@ -217,20 +236,19 @@ ModelPlayer.prototype = {
         }
     }
 };
-
 // ModelGame eigenschappen en logica van Game volgorde
 function ModelGame(parent) {
     this.parent = parent;
 }
 ModelGame.prototype = {
     gameFlow: function () {
-        if (this.parent.modelFrank.dialogNumber > 2 && !this.fase1) {
+        if (this.parent.modelFrank.dialogNumber > 5 && !this.fase1) {
             this.fase1 = true;
             this.parent.modelFrank.dialogActive = false;
             this.parent.modelFrank.miniGame1Active = true;
             console.warn('start mini game!');
         }
-        if (this.parent.modelMiniGame1.score > 5000 && !this.fase2) {
+        if (this.parent.modelMiniGame1.score > 1000 && !this.fase2) {
             this.fase2 = true;
             this.parent.modelFrank.clearScreen();
             this.parent.modelFrank.dialogActive = true;
@@ -241,9 +259,9 @@ ModelGame.prototype = {
     start: function () {
         var self = this;
         console.info('start game');
-        // this.parent.modelFrank.soundStartup.play();
+        this.parent.modelFrank.soundStartup.play();
         self.parent.modelFrank.displayTextOn();
-        self.parent.modelFrank.talk();
+        self.parent.modelFrank.displayLastAnswer();
     }
 };
 // Controller verbind models en views
@@ -257,7 +275,6 @@ function Controller() {
 Controller.prototype = {
     update: function () {
         var self = this;
-
         this.modelGame.gameFlow();
         this.modelFrank.displayTextOnScreen();
         this.modelMiniGame1.updateMiniGame1();

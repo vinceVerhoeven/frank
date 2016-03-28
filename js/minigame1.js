@@ -43,7 +43,7 @@ ModelMiniGame1.prototype = {
             this.addThumb();
             this.addMoreSpeedThumb();
         }
-        if (this.score > 0) {
+        if (this.score > 80) {
             this.startAutoScore = true;
         }
     },
